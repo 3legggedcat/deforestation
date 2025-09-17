@@ -3,6 +3,6 @@ A game where you cut down trees for points and have an NPC drop golden axes for 
 # How to play
 up, down, right, left arrow to move your player
 spacebar to chop the tree's and collect the golden axes
-#objective
+# objective
 The objective is to collect as many points as possible
 
