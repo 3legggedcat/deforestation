@@ -3,8 +3,8 @@ extends Node
 @export var mob_scene: PackedScene
 @export var npc_scene: PackedScene
 @export var item_scene: PackedScene
-@export var mob_count: int = 50
-@export var spawn_margin: int = 50
+@export var mob_count: int = 10
+@export var spawn_margin: int = 250
 @export var game_time_limit: float = 30.0
 
 var rng := RandomNumberGenerator.new()
@@ -16,8 +16,6 @@ var npc_spawned: bool = false
 func _ready():
 	rng.randomize()
 	$HUD.start_game.connect(_on_hud_start_game)
-
-
 
 func _process(delta):
 	if game_active:
@@ -58,63 +56,70 @@ func new_game():
 	game_active = true
 
 func spawn_mobs():
+	# Use actual viewport size, not fixed size
 	var screen_size = get_viewport().get_visible_rect().size
-	var player_pos = Vector2.ZERO
+	print("Screen size: ", screen_size)
 	
+	var player_pos = Vector2.ZERO
 	if has_node("Player") and $Player.visible:
 		player_pos = $Player.position
 	else:
 		player_pos = screen_size * 0.5
 	
-
-	var grid_cols = 4  
-	var grid_rows = 3  
-	var cell_width = (screen_size.x - spawn_margin * 2) / grid_cols
-	var cell_height = (screen_size.y - spawn_margin * 2) / grid_rows
+	print("Player position: ", player_pos)
+	print("Spawn margin: ", spawn_margin)
 	
-	#Create list of all possible positions
-	var spawn_positions = []
-	for row in range(grid_rows):
-		for col in range(grid_cols):
-			var pos = Vector2(
-				spawn_margin + (col + 0.5) * cell_width,
-				spawn_margin + (row + 0.5) * cell_height
-			)
-			# Only add positions that are far enough from player
-			if pos.distance_to(player_pos) > 120:
-				spawn_positions.append(pos)
+	# Ensure we have enough space for spawning
+	if screen_size.x <= spawn_margin * 2 or screen_size.y <= spawn_margin * 2:
+		print("ERROR: Screen too small for spawn margin!")
+		return
 	
-	#randomness
-	spawn_positions.shuffle()
+	# Calculate spawn boundaries
+	var min_x = spawn_margin
+	var max_x = screen_size.x - spawn_margin
+	var min_y = spawn_margin
+	var max_y = screen_size.y - spawn_margin
 	
+	print("Spawn bounds: x(", min_x, " to ", max_x, ") y(", min_y, " to ", max_y, ")")
 	
-	for i in range(min(mob_count, spawn_positions.size())):
-		var mob = mob_scene.instantiate()
-		mob.position = spawn_positions[i]
-		mob.rotation = 0
-		add_child(mob)
-		print("Spawned mob at: ", mob.position)
+	var spawned_count = 0
+	var max_attempts = 1000
+	var attempt = 0
 	
-	
-	if mob_count > spawn_positions.size():
-		print("Warning: Not enough spawn positions, placing remaining mobs randomly")
-		for i in range(spawn_positions.size(), mob_count):
+	# Simple approach: try random positions until we get enough valid ones
+	while spawned_count < mob_count and attempt < max_attempts:
+		var test_pos = Vector2(
+			rng.randf_range(min_x, max_x),
+			rng.randf_range(min_y, max_y)
+		)
+		
+		# Check if far enough from player
+		if test_pos.distance_to(player_pos) > 120:
 			var mob = mob_scene.instantiate()
-			mob.position = Vector2(
-				rng.randf_range(spawn_margin, screen_size.x - spawn_margin),
-				rng.randf_range(spawn_margin, screen_size.y - spawn_margin)
-			)
+			mob.position = test_pos
 			mob.rotation = 0
 			add_child(mob)
+			print("Spawned mob #", spawned_count + 1, " at: ", test_pos)
+			spawned_count += 1
+		
+		attempt += 1
+	
+	if spawned_count < mob_count:
+		print("Warning: Only spawned ", spawned_count, " out of ", mob_count, " mobs")
+	else:
+		print("Successfully spawned all ", mob_count, " mobs")
 
 func spawn_npc():
 	if npc_scene and not npc_spawned:
 		var npc = npc_scene.instantiate()
 		var screen_size = get_viewport().get_visible_rect().size
+		
+		# Use same margin system for NPC to ensure it's fully visible
 		npc.position = Vector2(
-			rng.randf_range(100, screen_size.x - 100),
-			rng.randf_range(100, screen_size.y - 100)
+			rng.randf_range(spawn_margin, screen_size.x - spawn_margin),
+			rng.randf_range(spawn_margin, screen_size.y - spawn_margin)
 		)
+		
 		if item_scene:
 			npc.item_scene = item_scene
 		add_child(npc)
@@ -143,13 +148,10 @@ func game_over_time_up():
 	$Player.hide()
 	$HUD.show_game_over_time()
 
-
-
 func _on_golden_axe_picked_up():
 	# Give 100 points bonus
 	score += 100
 	$HUD.update_score(score)
-
 
 func _on_item_picked_up(item_type: String):
 	match item_type:

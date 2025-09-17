@@ -27,7 +27,7 @@ func show_game_over_time():
 	
 	show_message("Time's Up!")
 	await $MessageTimer.timeout
-	$MessageLabel.text = "Well done try to \nScore higher"
+	$MessageLabel.text = "Try again"
 	$MessageLabel.show()
 	await get_tree().create_timer(3.0).timeout
 	
