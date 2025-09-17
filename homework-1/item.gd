@@ -21,6 +21,7 @@ func _ready():
 		shimmer.set_loops()
 		shimmer.tween_property($AnimatedSprite2D, "scale", Vector2(0.038, 0.034), 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		shimmer.tween_property($AnimatedSprite2D, "scale", Vector2(0.088, 0.084), 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
 	
 	
 	var timer = Timer.new()
