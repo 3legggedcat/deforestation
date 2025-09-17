@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://bpafjqt8x0ecd"]
+
+[ext_resource type="Texture2D" uid="uid://cppsbljmj8j18" path="res://pic/goldenaxe.png" id="1_tnite"]
+[ext_resource type="Script" uid="uid://dmmil6g6vkipe" path="res://item.gd" id="1_ttk8k"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ttk8k"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_tnite")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ttk8k"]
+
+[node name="Item" type="Area2D"]
+position = Vector2(54, 58)
+script = ExtResource("1_ttk8k")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(3.0000026, -1.0000019)
+scale = Vector2(0.03767125, 0.03424656)
+sprite_frames = SubResource("SpriteFrames_ttk8k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 0.7330383
+shape = SubResource("RectangleShape2D_ttk8k")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_area_exited"]
