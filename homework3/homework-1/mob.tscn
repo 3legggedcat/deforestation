@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://dew3prk3x6fwm"]
+
+[ext_resource type="Texture2D" uid="uid://btu8r1t8s1qs2" path="res://pic/tree.png" id="1_dy6sc"]
+[ext_resource type="Script" uid="uid://bksoy526vnqj8" path="res://mob.gd" id="1_nokgg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nokgg"]
+size = Vector2(41, 56)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ubaqv"]
+size = Vector2(55, 65)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_p11y5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_dy6sc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Mob" type="RigidBody2D"]
+position = Vector2(155, 409)
+script = ExtResource("1_nokgg")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, -227)
+shape = SubResource("RectangleShape2D_nokgg")
+
+[node name="HitArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
+position = Vector2(1.5, -227.5)
+shape = SubResource("RectangleShape2D_ubaqv")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -188)
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_p11y5")
+
+[connection signal="area_shape_entered" from="HitArea" to="." method="_on_hit_area_area_shape_entered"]
+[connection signal="area_shape_exited" from="HitArea" to="." method="_on_hit_area_area_shape_exited"]

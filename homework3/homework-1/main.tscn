@@ -1,0 +1,26 @@
+[gd_scene load_steps=8 format=3 uid="uid://btw8l3n7cdo23"]
+
+[ext_resource type="PackedScene" uid="uid://g7cjoc8h1v0b" path="res://player.tscn" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://dfufq7vc3xm7o" path="res://main.gd" id="1_7mycd"]
+[ext_resource type="PackedScene" uid="uid://dew3prk3x6fwm" path="res://mob.tscn" id="2_272bh"]
+[ext_resource type="PackedScene" uid="uid://dijca26oysryj" path="res://hud.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://bv5j4um8qucm4" path="res://npc.tscn" id="3_5vw27"]
+[ext_resource type="PackedScene" uid="uid://bpafjqt8x0ecd" path="res://item.tscn" id="4_kek77"]
+[ext_resource type="PackedScene" uid="uid://cwectoblso3ak" path="res://boid.tscn" id="5_272bh"]
+
+[node name="Main" type="Node" groups=["main"]]
+script = ExtResource("1_7mycd")
+mob_scene = ExtResource("2_272bh")
+npc_scene = ExtResource("3_5vw27")
+item_scene = ExtResource("4_kek77")
+boid_scene = ExtResource("5_272bh")
+
+[node name="StartPosition" type="Node2D" parent="."]
+position = Vector2(562, 423)
+
+[node name="Player" parent="." instance=ExtResource("1_0xm2m")]
+position = Vector2(562, 423)
+
+[node name="HUD" parent="." instance=ExtResource("2_h2yge")]
+
+[connection signal="start_game" from="HUD" to="." method="_on_hud_start_game"]

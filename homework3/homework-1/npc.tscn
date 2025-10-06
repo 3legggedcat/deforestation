@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://bv5j4um8qucm4"]
+
+[ext_resource type="Texture2D" uid="uid://b63clskbo2h8s" path="res://pic/lumbernpc.png" id="1_ideak"]
+[ext_resource type="Script" uid="uid://dxxybqlbld7ia" path="res://npc.gd" id="1_xxcha"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xxcha"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ideak")
+}],
+"loop": true,
+"name": &"right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ideak")
+}],
+"loop": true,
+"name": &"up",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ideak"]
+size = Vector2(61, 90)
+
+[node name="NPC" type="CharacterBody2D"]
+script = ExtResource("1_xxcha")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_xxcha")
+animation = &"right"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 7)
+shape = SubResource("RectangleShape2D_ideak")
